@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: sensor-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sensor_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  microservice-a:
+    build: ./microservice-a
+    container_name: microservice-a
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - microservice-b
+
+  microservice-b:
+    build: ./microservice-b
+    container_name: microservice-b
+    restart: always
+    ports:
+      - "3307:3306"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql-data:
+  
